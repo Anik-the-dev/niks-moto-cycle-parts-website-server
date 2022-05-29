@@ -30,11 +30,13 @@ function verifyJWT(req, res, next) {
 }
 
 // connect the database table
-// data CRUD...............
 async function run() {
     try {
         await client.connect();
         const partsCollection = client.db('niksmotoDB').collection('partsCollection');
+        const orderCollection = client.db('niksmotoDB').collection('orderCollection');
+        const userCollection = client.db('niksmotoDB').collection('userCollection');
+        const reviewCollection = client.db('niksmotoDB').collection('reviewCollection');
    
 
         // get data from mongo db
