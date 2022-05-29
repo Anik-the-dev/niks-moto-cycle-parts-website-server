@@ -37,8 +37,9 @@ async function run() {
         const orderCollection = client.db('niksmotoDB').collection('orderCollection');
         const userCollection = client.db('niksmotoDB').collection('userCollection');
         const reviewCollection = client.db('niksmotoDB').collection('reviewCollection');
-   
 
+
+        // products api
         // get data from mongo db
         app.get('/products', async (req, res) => {
             const query = {}
@@ -56,13 +57,50 @@ async function run() {
             res.send(db)
         })
 
-        
+
         // post data to Mongo DB
         app.post('/products', async (req, res) => {
             const product = req.body
             const result = await database.insertOne(product)
             res.send({ ack: "product added to server" })
         })
+
+        // orders
+        // get data by filtering Query..........
+        app.get('/orders', verifyJWT, async (req, res) => {
+            const email = req.query.email
+            const decodedEmail = req.decoded.email;
+            if (email === decodedEmail) {
+                const query = { uEmail: email }
+                const cursor = orderCollection.find(query)
+                const filter = await cursor.toArray()
+                return res.send(filter)
+
+            }
+            else {
+                return res.status(403).send({ message: 'forbidden access, Please Login' });
+            }
+
+        })
+
+        // post data to Mongo DB
+        app.post('/orders', async (req, res) => {
+            const order = req.body
+            const result = await orderCollection.insertOne(order)
+            res.send({ ack: "order added to server" })
+        })
+
+        // delete a single item
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: objectId(id) }
+            const result = await orderCollection.deleteOne(query)
+            res.send(result)
+        })
+
+        // users
+
+        // review
 
     } finally {
 
