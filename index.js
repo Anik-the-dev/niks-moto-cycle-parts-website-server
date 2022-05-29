@@ -56,6 +56,14 @@ async function run() {
             res.send(db)
         })
 
+        
+        // post data to Mongo DB
+        app.post('/products', async (req, res) => {
+            const product = req.body
+            const result = await database.insertOne(product)
+            res.send({ ack: "product added to server" })
+        })
+
     } finally {
 
     }
