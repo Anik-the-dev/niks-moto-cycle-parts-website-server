@@ -74,6 +74,22 @@ async function run() {
       res.send({ ack: "product added to server" });
     });
 
+    // Update the Product.......
+    app.put("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedProduct = req.body;
+      console.log(req.body);
+      const filter = { _id: objectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          available_quantity: updatedProduct.availableQuantity,
+        },
+      };
+      const result = await partsCollection.updateOne(filter, updatedDoc, options);
+      res.send(result);
+    });
+
     // orders
     // get data by filtering Query..........
     app.get("/orders", verifyJWT, async (req, res) => {
